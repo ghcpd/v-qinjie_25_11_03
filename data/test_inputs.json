@@ -1,0 +1,7 @@
+[
+  { "username": "admin" },
+  { "username": "admin' OR '1'='1" },
+  { "username": "nonexistent_user" },
+  { "username": "normal_user; DROP TABLE users;--" },
+  { "username": "<script>alert('xss')</script>" }
+]
