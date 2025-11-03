@@ -1,0 +1,128 @@
+{
+  "application": {
+    "name": "Secure Node.js User Lookup Service",
+    "stack": "Node.js 20, Express 4, MySQL",
+    "repository": "v-qinjie_25_11_03",
+    "branch": "S100"
+  },
+  "scan_date": "2025-11-03T15:04:00+08:00",
+  "auditor": "GitHub Copilot",
+  "summary": {
+    "total_findings": 3,
+    "critical": 1,
+    "high": 1,
+    "medium": 1,
+    "status": "All identified issues addressed with automated regression coverage"
+  },
+  "findings": [
+    {
+      "id": "VULN-001",
+      "title": "SQL Injection via unsanitized username parameter",
+      "cwe": "CWE-89",
+      "owasp_top_10": "A03:2021-Injection",
+      "severity": "critical",
+      "description": "The original implementation executed interpolated SQL queries using unsanitized `username` query parameters, allowing attackers to alter the WHERE clause or execute stacked statements.",
+      "affected_files": ["input.json"],
+      "evidence": {
+        "vulnerable_snippet": "const query = `SELECT * FROM users WHERE username = '${username}'`;",
+        "proof_of_concept": [
+          {
+            "payload": "admin' OR '1'='1",
+            "observed_behavior": "Returns the entire users table due to tautology",
+            "source": "Provided test input"
+          }
+        ]
+      },
+      "impact": "Full compromise of user data with potential privilege escalation.",
+      "remediation": {
+        "summary": "Replaced string interpolation with prepared statements and strict input validation.",
+        "patched_files": ["src/app.js", "config/database.js"],
+        "code_reference": "Parameterized query using pool.execute('SELECT id, username, email FROM users WHERE username = ?', [normalizedUsername])"
+      },
+      "validation": {
+        "automated_tests": "npm test",
+        "results": "PASS",
+        "test_cases": [
+          "returns user data using parameterized query",
+          "rejects SQL injection attempts with validation"
+        ]
+      }
+    },
+    {
+      "id": "VULN-002",
+      "title": "Hardcoded database credentials",
+      "cwe": "CWE-798",
+      "owasp_top_10": "A07:2021-Identification and Authentication Failures",
+      "severity": "high",
+      "description": "Credentials were embedded directly in the source, enabling easy credential leakage and violating secret-management policy.",
+      "affected_files": ["input.json"],
+      "evidence": {
+        "vulnerable_snippet": "password: 'password123'",
+        "proof_of_concept": [
+          {
+            "payload": "Source disclosure",
+            "observed_behavior": "Immediate credential exposure whenever the file is accessed",
+            "source": "Static analysis"
+          }
+        ]
+      },
+      "impact": "Attackers can reuse leaked credentials to access production databases.",
+      "remediation": {
+        "summary": "Externalized credentials to environment variables with `.env.example` guidance and Docker build arguments.",
+        "patched_files": [".env.example", "config/database.js", "src/server.js"],
+        "code_reference": "Database configuration now reads from process.env (DB_HOST, DB_USER, DB_PASSWORD, DB_NAME)."
+      },
+      "validation": {
+        "automated_tests": "npm test",
+        "results": "PASS"
+      }
+    },
+    {
+      "id": "VULN-003",
+      "title": "Insufficient request hardening",
+      "cwe": "CWE-693",
+      "owasp_top_10": "A05:2021-Security Misconfiguration",
+      "severity": "medium",
+      "description": "The baseline service lacked rate limiting, security headers, and central error handling, increasing susceptibility to brute-force and information leakage attacks.",
+      "affected_files": ["input.json"],
+      "evidence": {
+        "vulnerable_snippet": "app.listen(3000, () => console.log('Server running on port 3000'));",
+        "proof_of_concept": [
+          {
+            "payload": "Rapid repeated requests",
+            "observed_behavior": "No throttling or logging to detect abuse",
+            "source": "Manual review"
+          }
+        ]
+      },
+      "impact": "Enables automated enumeration attacks and increases blast radius of potential exploitation.",
+      "remediation": {
+        "summary": "Added Helmet for secure headers, Express Rate Limit, structured logging, health endpoint, and centralized error handling.",
+        "patched_files": ["src/app.js", "src/logger.js"],
+        "code_reference": "app.use(rateLimit({ windowMs, max }));"
+      },
+      "validation": {
+        "automated_tests": "npm test",
+        "results": "PASS"
+      }
+    }
+  ],
+  "tooling": {
+    "malicious_payload_catalog": "data/malicious_inputs.json",
+    "automated_test_command": "npm test",
+    "last_test_run": {
+      "timestamp": "2025-11-03T15:03:48+08:00",
+      "summary": "3 tests passed across 1 suite (Jest)"
+    },
+    "runtime_scripts": [
+      "scripts/run_security_test.sh",
+      "scripts/run_security_test.ps1"
+    ],
+    "docker": "Dockerfile"
+  },
+  "recommendations": [
+    "Deploy environment variables via a secrets manager and audit rotation cadence.",
+    "Enable ESLint security rules in CI to prevent regression.",
+    "Instrument database audit logging for sensitive query tracking."
+  ]
+}

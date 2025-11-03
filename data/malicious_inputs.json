@@ -1,0 +1,26 @@
+[
+  {
+    "category": "sql_injection",
+    "payload": "admin' OR '1'='1",
+    "expected_response": 400,
+    "notes": "Classic tautology SQL injection attempt that should be rejected by input validation."
+  },
+  {
+    "category": "sql_injection",
+    "payload": "a'; DROP TABLE users; --",
+    "expected_response": 400,
+    "notes": "Should not be executed because prepared statements and validation disallow dangerous characters."
+  },
+  {
+    "category": "path_traversal",
+    "payload": "../../etc/passwd",
+    "expected_response": 400,
+    "notes": "Demonstrates sanitizer rejecting non-conforming username formats."
+  },
+  {
+    "category": "overflow",
+    "payload": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "expected_response": 400,
+    "notes": "Overly long username should be blocked to avoid buffer/resource exhaustion."
+  }
+]
