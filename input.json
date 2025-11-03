@@ -1,0 +1,8 @@
+{
+  "source_code": "const express = require('express');\nconst app = express();\nconst mysql = require('mysql');\nconst connection = mysql.createConnection({\n  host: 'localhost',\n  user: 'root',\n  password: 'password123', // hardcoded secret\n  database: 'users'\n});\n\napp.get('/user', (req, res) => {\n  const username = req.query.username;\n  const query = `SELECT * FROM users WHERE username = '${username}'`; // vulnerable to SQL injection\n  connection.query(query, (err, results) => {\n    if (err) throw err;\n    res.json(results);\n  });\n});\n\napp.listen(3000, () => console.log('Server running on port 3000'));",
+  "test_inputs": [
+    {"username": "admin"},
+    {"username": "admin' OR '1'='1"},
+    {"username": "nonexistent_user"}
+  ]
+}
