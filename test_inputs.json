@@ -1,0 +1,23 @@
+[
+  {
+    "username": "admin"
+  },
+  {
+    "username": "admin' OR '1'='1"
+  },
+  {
+    "username": "test'; DROP TABLE users; --"
+  },
+  {
+    "username": "normal_user"
+  },
+  {
+    "username": "'; SHUTDOWN; --"
+  },
+  {
+    "username": "__proto__"
+  },
+  {
+    "username": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  }
+]
