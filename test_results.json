@@ -1,0 +1,45 @@
+{
+  "timestamp": "2025-11-03T08:34:21.062Z",
+  "static": {
+    "insecureIssues": [
+      {
+        "type": "hardcoded-secret",
+        "severity": "high",
+        "message": "Hardcoded database password."
+      },
+      {
+        "type": "sql-injection",
+        "severity": "critical",
+        "message": "Unsafely concatenated SQL query with user input."
+      },
+      {
+        "type": "missing-security-headers",
+        "severity": "medium",
+        "message": "Helmet not enabled."
+      }
+    ],
+    "secureFindings": [
+      {
+        "type": "parameterized-query",
+        "message": "Parameterized query in use."
+      },
+      {
+        "type": "security-headers",
+        "message": "Helmet middleware present."
+      },
+      {
+        "type": "input-validation",
+        "message": "Ajv validation implemented."
+      },
+      {
+        "type": "no-hardcoded-secret",
+        "message": "No hardcoded password present."
+      }
+    ]
+  },
+  "dynamic": {
+    "invalidStatus": 400,
+    "oversizeStatus": 400
+  },
+  "dynamicValidationPassed": true
+}
