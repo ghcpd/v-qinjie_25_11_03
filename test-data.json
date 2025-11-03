@@ -1,0 +1,101 @@
+﻿{
+  "test_scenarios": [
+    {
+      "category": "SQL Injection",
+      "description": "Test SQL injection vulnerabilities in user queries",
+      "tests": [
+        {
+          "name": "Basic SQL Injection - OR condition",
+          "endpoint": "/user",
+          "method": "GET",
+          "params": {"username": "admin' OR '1'='1"},
+          "expected_vulnerable": "Returns all users",
+          "expected_secure": "400 Bad Request - Invalid username format"
+        },
+        {
+          "name": "SQL Injection - UNION attack",
+          "endpoint": "/user",
+          "method": "GET",
+          "params": {"username": "admin' UNION SELECT * FROM passwords--"},
+          "expected_vulnerable": "Exposes additional data",
+          "expected_secure": "400 Bad Request - Invalid username format"
+        },
+        {
+          "name": "SQL Injection in login",
+          "endpoint": "/login",
+          "method": "POST",
+          "body": {"username": "admin' OR '1'='1'--", "password": "anything"},
+          "expected_vulnerable": "Login successful without valid credentials",
+          "expected_secure": "400 Bad Request - Invalid credentials format"
+        }
+      ]
+    },
+    {
+      "category": "Command Injection",
+      "description": "Test command injection vulnerabilities",
+      "tests": [
+        {
+          "name": "Command Injection - semicolon",
+          "endpoint": "/ping",
+          "method": "GET",
+          "params": {"host": "127.0.0.1; cat /etc/passwd"},
+          "expected_vulnerable": "Executes cat command",
+          "expected_secure": "400 Bad Request - Invalid host format"
+        },
+        {
+          "name": "Command Injection - command chaining",
+          "endpoint": "/ping",
+          "method": "GET",
+          "params": {"host": "127.0.0.1 && whoami"},
+          "expected_vulnerable": "Executes whoami command",
+          "expected_secure": "400 Bad Request - Invalid host format"
+        }
+      ]
+    },
+    {
+      "category": "Path Traversal",
+      "description": "Test path traversal vulnerabilities",
+      "tests": [
+        {
+          "name": "Path Traversal - directory traversal",
+          "endpoint": "/download",
+          "method": "GET",
+          "params": {"file": "../../etc/passwd"},
+          "expected_vulnerable": "Downloads sensitive files",
+          "expected_secure": "400 Bad Request - Invalid filename"
+        },
+        {
+          "name": "Path Traversal - absolute path",
+          "endpoint": "/download",
+          "method": "GET",
+          "params": {"file": "/etc/passwd"},
+          "expected_vulnerable": "Accesses absolute path",
+          "expected_secure": "400 Bad Request - Invalid filename"
+        }
+      ]
+    }
+  ],
+  "legitimate_tests": [
+    {
+      "name": "Valid user query",
+      "endpoint": "/user",
+      "method": "GET",
+      "params": {"username": "john_doe"},
+      "expected": "200 OK - Returns user data"
+    },
+    {
+      "name": "Valid login",
+      "endpoint": "/login",
+      "method": "POST",
+      "body": {"username": "admin", "password": "correct_password"},
+      "expected": "200 OK - Login successful"
+    },
+    {
+      "name": "Valid ping",
+      "endpoint": "/ping",
+      "method": "GET",
+      "params": {"host": "127.0.0.1"},
+      "expected": "200 OK - Ping results"
+    }
+  ]
+}

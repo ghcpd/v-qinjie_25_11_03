@@ -1,0 +1,43 @@
+{
+  "name": "nodejs-security-audit",
+  "version": "1.0.0",
+  "description": "Security audit framework for Node.js web applications",
+  "main": "security-audit.js",
+  "scripts": {
+    "test": "node security-tests.js http://localhost:3000",
+    "test:vulnerable": "node security-tests.js http://localhost:3000 vulnerable-results.json",
+    "test:secure": "node security-tests.js http://localhost:3001 secure-results.json",
+    "start:vulnerable": "node vulnerable-app.js",
+    "start:secure": "node secure-app.js",
+    "audit": "node security-audit.js vulnerable-app.js",
+    "setup:db": "node setup-database.js",
+    "lint": "eslint .",
+    "format": "prettier --write ."
+  },
+  "keywords": [
+    "security",
+    "audit",
+    "vulnerability",
+    "testing",
+    "nodejs",
+    "OWASP"
+  ],
+  "author": "Security Team",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2",
+    "mysql": "^2.18.1",
+    "dotenv": "^16.3.1",
+    "axios": "^1.6.0",
+    "chalk": "^4.1.2"
+  },
+  "devDependencies": {
+    "eslint": "^8.50.0",
+    "prettier": "^3.0.3",
+    "nodemon": "^3.0.1"
+  },
+  "engines": {
+    "node": ">=14.0.0",
+    "npm": ">=6.0.0"
+  }
+}

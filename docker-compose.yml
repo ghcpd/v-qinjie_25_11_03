@@ -1,0 +1,85 @@
+version: '3.8'
+
+services:
+  db:
+    image: mysql:8.0
+    container_name: security-audit-db
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpass123
+      MYSQL_DATABASE: users
+      MYSQL_USER: appuser
+      MYSQL_PASSWORD: secure_password_here
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./init-db.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - security-net
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  vulnerable-app:
+    build: .
+    container_name: vulnerable-app
+    command: node vulnerable-app.js
+    ports:
+      - "3000:3000"
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DB_HOST: db
+      DB_USER: root
+      DB_PASSWORD: password123
+      DB_NAME: users
+      NODE_ENV: development
+    networks:
+      - security-net
+    volumes:
+      - ./uploads:/app/uploads
+
+  secure-app:
+    build: .
+    container_name: secure-app
+    command: node secure-app.js
+    ports:
+      - "3001:3000"
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DB_HOST: db
+      DB_USER: appuser
+      DB_PASSWORD: secure_password_here
+      DB_NAME: users
+      NODE_ENV: development
+      PORT: 3000
+    networks:
+      - security-net
+    volumes:
+      - ./uploads:/app/uploads
+
+  test-runner:
+    build: .
+    container_name: test-runner
+    command: sleep infinity
+    depends_on:
+      - vulnerable-app
+      - secure-app
+    networks:
+      - security-net
+    volumes:
+      - ./test-data.json:/app/test-data.json
+      - ./security-tests.js:/app/security-tests.js
+      - ./results:/app/results
+
+networks:
+  security-net:
+    driver: bridge
+
+volumes:
+  mysql_data:
