@@ -1,0 +1,29 @@
+{
+  "name": "secure-node-audit",
+  "version": "1.0.0",
+  "description": "Hardened Node.js Express service with security regression tests",
+  "main": "src/server.js",
+  "type": "commonjs",
+  "scripts": {
+    "start": "node src/server.js",
+    "test": "mocha \"tests/**/*.test.js\"",
+    "security:test": "npm test"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "express-rate-limit": "^7.2.0",
+    "helmet": "^7.1.0",
+    "joi": "^17.13.1",
+    "mysql2": "^3.10.1"
+  },
+  "devDependencies": {
+    "chai": "^4.5.0",
+    "mocha": "^10.6.0",
+    "supertest": "^6.3.4"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "license": "MIT"
+}

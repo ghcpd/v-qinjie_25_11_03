@@ -1,0 +1,18 @@
+[
+  {
+    "description": "Boolean-based SQL injection",
+    "payload": "admin' OR '1'='1"
+  },
+  {
+    "description": "Stacked query attempt",
+    "payload": "admin'; DROP TABLE users; --"
+  },
+  {
+    "description": "Union select data leak",
+    "payload": "guest' UNION SELECT null, credit_card, password FROM secrets --"
+  },
+  {
+    "description": "Long payload to test rate limiting",
+    "payload": "user1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890"
+  }
+]
