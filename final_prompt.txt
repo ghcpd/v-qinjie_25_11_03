@@ -1,0 +1,49 @@
+Prompt
+
+You are a cybersecurity engineer tasked with auditing a Node.js web application for security vulnerabilities.
+
+Your responsibilities include identifying, explaining, and fixing potential security flaws, including (but not limited to):
+
+	• SQL Injection
+
+	• Command Injection
+
+	• Hardcoded credentials or secrets
+
+	• Insecure file handling
+
+	• Insufficient input validation
+
+The following requirements must also be met:
+
+	1. Ability to generate reproducible environments (e.g., requirements.txt, Dockerfile, or setup.sh).
+
+	2. Ability to generate structured test data simulating malicious user inputs.
+
+	3. Ability to design automated test code that validates vulnerability detection and patch effectiveness.
+
+	4. Automatic generation of runtime scripts (e.g., run_security_test.sh) for one-click testing.
+
+	5. Ability to produce a detailed vulnerability report in JSON format.
+
+	6. If code is insecure, the model should also generate a secure refactored version and explain the fix.
+
+
+
+Title
+
+Evaluation of GPT-5, Claude 3.5 Sonnet, and Gemini 2.0 on Web Security Vulnerability Detection and Mitigation
+
+
+
+Description
+
+This experiment assesses the models’ ability to:
+
+	• Detect and explain code-level vulnerabilities in Node.js web applications.
+
+	• Suggest secure remediation strategies following OWASP guidelines.
+
+	• Generate automated test environments and scripts for security regression testing.
+
+Output structured, machine-readable JSON vulnerability reports.
